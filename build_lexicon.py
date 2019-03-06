@@ -4,7 +4,9 @@ import random
 import time
 import string
 
-def getWordList(domain, lex_category, prefix, app_id, app_key):
+from collections import defaultdict
+
+def getWordJSON(domain, lex_category, prefix, app_id, app_key):
     language = 'en'
 
     domain_query = '' if domain == None else 'domains={0};'.format(domain)
@@ -25,11 +27,6 @@ def getWordList(domain, lex_category, prefix, app_id, app_key):
 
     return r.json()
 
-def getWords(wordlist):
-    return [x['word']+'\n'.encode('utf-8') for x in wordlist['results']]
-
-
-
 def main():
     # API App ID and Key are stored in a separate text file.
     # App ID is on the first line, and App Key is on the second line.
@@ -39,36 +36,39 @@ def main():
         app_id = f.readline().strip()
         app_key = f.readline().strip()
 
-    adjective_lex = {}
+    adjective_lex = defaultdict(list)
 
-    for prefix in string.ascii_lowercase:
-        adjective_json = getWordList(None, 'adjective', prefix, app_id, app_key)
-
-        print('Getting adjectives starting with: ' + prefix)
-        if adjective_json == None:
-            print("Problem with dictionary wordlist request for '{0}'...".format(prefix))
-
-        for a in adjective_json['results']:
-            adjective_lex[a['id']] = {'word': a['word']}
-
-        time.sleep(12)
-
-    with open('adjective_lex.json', 'w') as f:
-        json.dump(adjective_lex, f)
-
+    # for prefix in string.ascii_lowercase:
+    #     adjective_json = getWordJSON(None, 'adjective', prefix, app_id, app_key)
+    #
+    #     print('Getting adjectives starting with: ' + prefix)
+    #     if adjective_json == None:
+    #         print("Problem with dictionary wordlist request for '{0}'...".format(prefix))
+    #
+    #     results = adjective_json['results']
+    #
+    #     adjective_lex[prefix] = [a['word'] for a in results]
+    #
+    #     time.sleep(12)
+    #
+    # with open('adjective_lex.json', 'w') as f:
+    #     json.dump(adjective_lex, f)
+    #
     animal_domains = ['mammal', 'reptile', 'bird', 'fish']
-
-    animal_lex = {}
+    animal_lex = defaultdict(list)
 
     for domain in animal_domains:
-        animal_json = getWordList(domain, 'noun', None, app_id, app_key)
+        animal_json = getWordJSON(domain, 'noun', None, app_id, app_key)
         if animal_json == None:
             print("Problem with dictionary wordlist request for '{0}'...".format(domain))
 
-        for a in animal_json['results']:
-            animal_lex[a['id']] = {'word': a['word']}
+        results = animal_json['results']
 
-        time.sleep(15)
+        for animal in animal_json['results']:
+            word = animal['word']
+            animal_lex[word[0]].append(word)
+
+        time.sleep(12)
 
     with open('animal_lex.json', 'w') as f:
         json.dump(animal_lex, f)

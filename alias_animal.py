@@ -34,7 +34,9 @@ def getWordList(prefix, filename):
     with open(filename, 'r') as f:
         lexicon = json.loads(f.read())
 
-    wordlist = [lexicon[x]['word'] for x in lexicon if x.startswith(prefix)]
+	lexicon = lexicon[prefix[0]]
+
+    wordlist = [word for word in lexicon if word.startswith(prefix)]
 
     return wordlist
 
