@@ -38,22 +38,22 @@ def main():
 
     adjective_lex = defaultdict(list)
 
-    # for prefix in string.ascii_lowercase:
-    #     adjective_json = getWordJSON(None, 'adjective', prefix, app_id, app_key)
-    #
-    #     print('Getting adjectives starting with: ' + prefix)
-    #     if adjective_json == None:
-    #         print("Problem with dictionary wordlist request for '{0}'...".format(prefix))
-    #
-    #     results = adjective_json['results']
-    #
-    #     adjective_lex[prefix] = [a['word'] for a in results]
-    #
-    #     time.sleep(12)
-    #
-    # with open('adjective_lex.json', 'w') as f:
-    #     json.dump(adjective_lex, f)
-    #
+    for prefix in string.ascii_lowercase:
+        adjective_json = getWordJSON(None, 'adjective', prefix, app_id, app_key)
+
+        print('Getting adjectives starting with: ' + prefix)
+        if adjective_json == None:
+            print("Problem with dictionary wordlist request for '{0}'...".format(prefix))
+
+        results = adjective_json['results']
+
+        adjective_lex[prefix] = [a['word'] for a in results]
+
+        time.sleep(12)
+
+    with open('adjective_lex.json', 'w') as f:
+        json.dump(adjective_lex, f)
+
     animal_domains = ['mammal', 'reptile', 'bird', 'fish']
     animal_lex = defaultdict(list)
 
